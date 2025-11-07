@@ -13,13 +13,12 @@
 
 ## 📘 Table of Contents
 
-| Sr.No | Title | Date | Page No | Sign | Remark |
-|---:|---|---:|---:|---|---|
-| 1 | Design suitable data structures & implement Pass-I & Pass-II of a two-pass assembler for a pseudo machine. The output of Pass I should be input of Pass II. | 30/07/2025 | | | |
-| 2 | Design suitable data structures & implement Pass-I & Pass-II of a two-pass macro processor. The output of Pass I should be input for Pass II. | 23/08/2025 | | | |
-| 3 | Write a Java program to implement the following scheduling algorithms: FCFS, SJF, Priority & Round Robin. | 10/09/2025 | | | |
-| 4 | Write a program to simulate page replacement algorithms (e.g., FIFO, LRU, Optimal). | 19/09/2025 | | | |
-
+| Sr.No | Title |
+|:---:|---|
+| 1 | Design suitable data structures & implement Pass-I & Pass-II of a two-pass assembler for a pseudo machine. The output of Pass I should be input of Pass II. |
+| 2 | Design suitable data structures & implement Pass-I & Pass-II of a two-pass macro processor. The output of Pass I should be input for Pass II. |
+| 3 | Write a Java program to implement the following scheduling algorithms: FCFS, SJF, Priority & Round Robin. |
+| 4 | Write a program to simulate page replacement algorithms (e.g., FIFO, LRU, Optimal). |
 ---
 
 ## 🧠 Practical 1 — Two-pass Assembler (Pass I & Pass II)
