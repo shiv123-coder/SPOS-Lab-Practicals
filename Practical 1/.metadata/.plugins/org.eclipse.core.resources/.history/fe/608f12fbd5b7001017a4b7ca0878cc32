@@ -1,0 +1,60 @@
+package assembler;
+
+import java.io.*;
+import java.util.*;
+
+public class Pass2 {
+    public static void main(String[] args) throws IOException {
+
+        BufferedReader inter = new BufferedReader(new FileReader("intermediate.txt"));
+        BufferedReader symtab = new BufferedReader(new FileReader("symtab.txt"));
+        BufferedWriter target = new BufferedWriter(new FileWriter("target.txt"));
+
+        // Load symbol table into HashMap
+        Map<String, String> symTable = new HashMap<>();
+        String line;
+
+        while ((line = symtab.readLine()) != null) {
+            String[] parts = line.split("\\s+");
+            if (parts.length >= 2) {
+                symTable.put(parts[0], parts[1]);
+            }
+        }
+
+        // Instruction and register codes
+        List<String> inst = Arrays.asList("STOP", "ADD", "SUB", "MULT", "MOVER", "MOVEM", "COMP", "DIV", "READ", "PRINT");
+        List<String> reg = Arrays.asList("AREG", "BREG", "CREG", "DREG");
+
+        // Process intermediate code
+        while ((line = inter.readLine()) != null) {
+            String[] parts = line.split("\\s+");
+            if (parts.length < 2) continue;
+
+            String lc = parts[0];
+            String opcode = parts[1];
+            String operand1 = parts.length > 2 ? parts[2] : "";
+            String operand2 = parts.length > 3 ? parts[3] : "";
+
+            // Skip assembler directives
+            if (opcode.equals("START") || opcode.equals("END") || opcode.equals("DS")) continue;
+
+            int opCodeVal = inst.indexOf(opcode);
+            int regCodeVal = reg.indexOf(operand1);
+
+            // If operands are not found, use default placeholders
+            if (opCodeVal == -1) opCodeVal = 0;
+            if (regCodeVal == -1) regCodeVal = 0;
+
+            String address = symTable.getOrDefault(operand2, "000");
+
+            target.write(lc + "\t" + String.format("%02d", opCodeVal) + "\t" +
+                    String.format("%02d", regCodeVal) + "\t" + address + "\n");
+        }
+
+        inter.close();
+        symtab.close();
+        target.close();
+
+        System.out.println("Pass-II complete. Target code generated in target.txt.");
+    }
+}

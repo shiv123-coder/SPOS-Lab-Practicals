@@ -1,0 +1,72 @@
+package Scheduling;
+import java.util.*;
+
+// Class representing a single process
+class FCFSProcess {
+    String id;          // Process ID
+    int arrival;        // Arrival Time
+    int burst;          // Burst Time
+    int waiting;        // Waiting Time
+    int turnaround;     // Turnaround Time
+
+    // Constructor
+    FCFSProcess(String id, int arrival, int burst) {
+        this.id = id;
+        this.arrival = arrival;
+        this.burst = burst;
+    }
+}
+
+// Main class implementing FCFS Scheduling Algorithm
+public class FCFS_ALGO {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        List<FCFSProcess> list = new ArrayList<>();
+
+        // Step 1: Input number of processes (max 10 allowed)
+        System.out.print("Enter number of processes (max 10): ");
+        int n = Math.min(sc.nextInt(), 10);
+
+        // Step 2: Take process details from user
+        for (int i = 0; i < n; i++) {
+            System.out.print("\nEnter Process ID: ");
+            String id = sc.next();
+            System.out.print("Enter Arrival Time: ");
+            int at = sc.nextInt();
+            System.out.print("Enter Burst Time: ");
+            int bt = sc.nextInt();
+            list.add(new FCFSProcess(id, at, bt));
+        }
+
+        // Step 3: Sort processes by Arrival Time (FCFS Rule)
+        list.sort(Comparator.comparingInt(p -> p.arrival));
+
+        int currentTime = 0, totalWT = 0, totalTAT = 0;
+
+        // Step 4: Calculate Waiting Time and Turnaround Time
+        for (FCFSProcess p : list) {
+            if (currentTime < p.arrival)
+                currentTime = p.arrival; // CPU idle if process hasn’t arrived yet
+
+            p.waiting = currentTime - p.arrival;     // Waiting Time
+            p.turnaround = p.waiting + p.burst;      // Turnaround Time
+            currentTime += p.burst;                  // Update current CPU time
+
+            totalWT += p.waiting;
+            totalTAT += p.turnaround;
+        }
+
+        // Step 5: Display the results
+        System.out.println("\nProcess\tAT\tBT\tWT\tTAT");
+        for (FCFSProcess p : list) {
+            System.out.println(p.id + "\t" + p.arrival + "\t" + p.burst + "\t" +
+                    p.waiting + "\t" + p.turnaround);
+        }
+
+        // Step 6: Display Average Waiting Time and Turnaround Time
+        System.out.printf("\nAverage Waiting Time: %.2f", (double) totalWT / n);
+        System.out.printf("\nAverage Turnaround Time: %.2f\n", (double) totalTAT / n);
+
+        sc.close();
+    }
+}

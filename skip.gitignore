@@ -1,0 +1,10 @@
+# Ignore Eclipse and system files
+.metadata/
+bin/
+.settings/
+.classpath
+.project
+Thumbs.db
+*.log
+*.tmp
+*.dat

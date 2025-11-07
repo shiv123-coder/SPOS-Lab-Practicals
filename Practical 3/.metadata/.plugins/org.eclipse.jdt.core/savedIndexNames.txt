@@ -1,0 +1,2 @@
+INDEX VERSION 1.134+D:\3rd Year\System Programming and Operating System\Lab\Practical 3\.metadata\.plugins\org.eclipse.jdt.core
+1865797976.index

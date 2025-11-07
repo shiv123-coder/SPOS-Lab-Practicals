@@ -1,0 +1,127 @@
+package Scheduling;
+
+import java.util.*;
+
+/**
+ * Represents a process with necessary scheduling attributes.
+ */
+class Process {
+    private String processId;
+    private int arrivalTime;
+    private int burstTime;
+    private int waitingTime;
+    private int turnaroundTime;
+
+    // Constructor
+    public Process(String processId, int arrivalTime, int burstTime) {
+        this.processId = processId;
+        this.arrivalTime = arrivalTime;
+        this.burstTime = burstTime;
+    }
+
+    // Getters
+    public String getProcessId() { return processId; }
+    public int getArrivalTime() { return arrivalTime; }
+    public int getBurstTime() { return burstTime; }
+    public int getWaitingTime() { return waitingTime; }
+    public int getTurnaroundTime() { return turnaroundTime; }
+
+    // Setters
+    public void setWaitingTime(int waitingTime) { this.waitingTime = waitingTime; }
+    public void setTurnaroundTime(int turnaroundTime) { this.turnaroundTime = turnaroundTime; }
+}
+
+/**
+ * Scheduler class implementing FCFS algorithm logic.
+ */
+class Scheduler {
+
+    // Method to calculate Waiting and Turnaround times
+    public void calculateFCFS(List<Process> processes) {
+
+        // Sort processes by arrival time (FCFS)
+        processes.sort(Comparator.comparingInt(Process::getArrivalTime));
+
+        int currentTime = 0;
+
+        for (Process p : processes) {
+            // If CPU is idle before process arrives
+            if (currentTime < p.getArrivalTime()) {
+                currentTime = p.getArrivalTime();
+            }
+
+            // Calculate Waiting and Turnaround times
+            int waitingTime = currentTime - p.getArrivalTime();
+            int turnaroundTime = waitingTime + p.getBurstTime();
+
+            p.setWaitingTime(waitingTime);
+            p.setTurnaroundTime(turnaroundTime);
+
+            // Update current time after executing this process
+            currentTime += p.getBurstTime();
+        }
+    }
+
+    // Method to display process table and averages
+    public void display(List<Process> processes) {
+        System.out.printf("%-10s%-15s%-15s%-15s%-15s%n",
+                "Process", "Arrival Time", "Burst Time", "Waiting Time", "Turnaround Time");
+
+        for (Process p : processes) {
+            System.out.printf("%-10s%-15d%-15d%-15d%-15d%n",
+                    p.getProcessId(), p.getArrivalTime(), p.getBurstTime(),
+                    p.getWaitingTime(), p.getTurnaroundTime());
+        }
+
+        double avgWT = processes.stream()
+                .mapToInt(Process::getWaitingTime)
+                .average()
+                .orElse(0.0);
+
+        double avgTAT = processes.stream()
+                .mapToInt(Process::getTurnaroundTime)
+                .average()
+                .orElse(0.0);
+
+        System.out.printf("%nAverage Waiting Time: %.2f%n", avgWT);
+        System.out.printf("Average Turnaround Time: %.2f%n", avgTAT);
+    }
+}
+
+/**
+ * Main class to run the FCFS scheduler.
+ */
+public class FCFS_Algo {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        List<Process> processList = new ArrayList<>();
+
+        // Input number of processes
+        System.out.print("Enter number of processes: ");
+        int n = scanner.nextInt();
+
+        // Input details for each process
+        for (int i = 0; i < n; i++) {
+            System.out.print("\nEnter Process ID: ");
+            String pid = scanner.next();
+
+            System.out.print("Enter Arrival Time: ");
+            int at = scanner.nextInt();
+
+            System.out.print("Enter Burst Time: ");
+            int bt = scanner.nextInt();
+
+            processList.add(new Process(pid, at, bt));
+        }
+
+        // Create scheduler and run FCFS algorithm
+        Scheduler scheduler = new Scheduler();
+        scheduler.calculateFCFS(processList);
+
+        // Display results
+        System.out.println("\n===== FCFS Scheduling Result =====");
+        scheduler.display(processList);
+
+        scanner.close();
+    }
+}

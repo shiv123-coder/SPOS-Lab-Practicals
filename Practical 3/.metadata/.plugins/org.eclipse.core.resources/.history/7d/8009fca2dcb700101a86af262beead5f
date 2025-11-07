@@ -1,0 +1,58 @@
+package Scheduling;
+import java.util.Scanner;
+
+public class RoundR {
+    public static void main(String[] args) {
+        Scanner s = new Scanner(System.in);
+
+        int[] btime = new int[100];
+        int[] wtime = new int[100];
+        int[] rtime = new int[100];
+        int num, quantum;
+
+        // Step 1: Input number of processes
+        System.out.print("Enter number of processes: ");
+        num = s.nextInt();
+
+        // Step 2: Input burst times
+        System.out.println("Enter burst time for each process:");
+        for (int i = 0; i < num; i++) {
+            btime[i] = s.nextInt();
+            rtime[i] = btime[i]; // Remaining time initially = burst time
+            wtime[i] = 0;
+        }
+
+        // Step 3: Input time quantum
+        System.out.print("Enter time quantum: ");
+        quantum = s.nextInt();
+
+        // Step 4: Round Robin Scheduling logic
+        int remaining = num;
+        int time = 0;
+        int i = 0;
+
+        System.out.print("Gantt Chart:\n" + time);
+
+        while (remaining > 0) {
+            if (rtime[i] > quantum) {
+                // Process executes for full quantum
+                rtime[i] -= quantum;
+                time += quantum;
+                System.out.print(" | P" + (i + 1) + " | " + time);
+            } else if (rtime[i] > 0) {
+                // Process executes for remaining time and finishes
+                time += rtime[i];
+                rtime[i] = 0;
+                remaining--;
+                System.out.print(" | P" + (i + 1) + " | " + time);
+            }
+
+            i++;
+            if (i == num) {
+                i = 0; // Restart loop for Round Robin
+            }
+        }
+
+        s.close();
+    }
+}

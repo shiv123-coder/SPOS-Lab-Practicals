@@ -1,0 +1,40 @@
+package assembler;
+
+import java.io.*;
+import java.util.*;
+
+public class Pass2 {
+    public static void main(String[] args) throws IOException {
+        try (BufferedReader inter = new BufferedReader(new FileReader("intermediate.txt"));
+             BufferedReader symtab = new BufferedReader(new FileReader("symtab.txt"));
+             BufferedWriter target = new BufferedWriter(new FileWriter("target.txt"))) {
+
+            Map<String, String> sym = new HashMap<>();
+            String line;
+            while ((line = symtab.readLine()) != null) {
+                String[] p = line.trim().split("\\s+");
+                if (p.length >= 2) sym.put(p[0], p[1]);
+            }
+
+            List<String> inst = List.of("STOP","ADD","SUB","MULT","MOVER","MOVEM","COMP","DIV","READ","PRINT");
+            List<String> regs = List.of("AREG","BREG","CREG","DREG");
+
+            while ((line = inter.readLine()) != null) {
+                String[] p = line.trim().split("\\s+");
+                if (p.length < 2) continue;
+                String lc = p[0], op = p[1];
+                if (op.equals("START") || op.equals("END") || op.equals("DS")) continue;
+                if (op.equals("DC")) { target.write(lc + "\t" + (p.length>2? p[2]:"") + "\n"); continue; }
+
+                String o1 = p.length>2? p[2] : "";
+                String o2 = p.length>3? p[3] : "";
+                int opc = inst.indexOf(op);
+                int rc = regs.indexOf(o1);
+                String addr = sym.getOrDefault(o2, "000");
+                target.write(lc + "\t" + String.format("%02d", opc) + "\t" + String.format("%02d", rc) + "\t" + addr + "\n");
+            }
+        }
+
+        System.out.println("Pass-II complete. Target code generated in target.txt.");
+    }
+}

@@ -1,0 +1,41 @@
+package assembler;
+
+import java.io.*;
+
+public class Pass1Simple {
+    public static void main(String[] args) throws IOException {
+
+        // Sample assembly program (LABEL, OPCODE, OPERAND)
+        String[][] code = {
+            {"", "START", "100"},
+            {"LOOP", "MOVER", "AREG,DATA"},
+            {"", "ADD", "AREG,ONE"},
+            {"", "MOVEM", "AREG,RESULT"},
+            {"", "END", ""}
+        };
+
+        int lc = Integer.parseInt(code[0][2]); // starting address
+        BufferedWriter symtab = new BufferedWriter(new FileWriter("symtab.txt"));
+        BufferedWriter inter = new BufferedWriter(new FileWriter("intermediate.txt"));
+
+        for (int i = 1; i < code.length; i++) {
+            String label = code[i][0];
+            String opcode = code[i][1];
+            String operand = code[i][2];
+
+            if (!label.equals("")) {
+                symtab.write(label + "\t" + lc + "\n"); // store label with address
+            }
+
+            inter.write(lc + "\t" + opcode + "\t" + operand + "\n");
+
+            // simple LC increment (you can modify for DS/DC)
+            lc++;
+        }
+
+        symtab.close();
+        inter.close();
+
+        System.out.println("Pass-1 complete. Symbol Table and Intermediate Code generated.");
+    }
+}

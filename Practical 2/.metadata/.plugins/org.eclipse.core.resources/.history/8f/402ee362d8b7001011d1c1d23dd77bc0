@@ -1,0 +1,80 @@
+package Macroprocessor;
+
+import java.io.*;
+import java.util.*;
+
+public class Pass1 {
+    public static void main(String[] args) throws IOException {
+
+        // Sample macro code (can be replaced with file input)
+        String[] code = {
+            "MACRO",
+            "INCR &ARG1",
+            "A 1,&ARG1",
+            "MEND",
+            "START 101",
+            "INCR TERM",
+            "MOVEM AREG,TERM",
+            "END"
+        };
+
+        List<String[]> MNT = new ArrayList<>();
+        List<String> MDT = new ArrayList<>();
+
+        BufferedWriter inter = new BufferedWriter(new FileWriter("intermediate.txt"));
+        BufferedWriter mntFile = new BufferedWriter(new FileWriter("MNT.txt"));
+        BufferedWriter mdtFile = new BufferedWriter(new FileWriter("MDT.txt"));
+
+        boolean isMacro = false;
+        int mdtIndex = 0;
+
+        for (int i = 0; i < code.length; i++) {
+            String line = code[i].trim();
+            String[] parts = line.split(" ");
+
+            if (parts[0].equalsIgnoreCase("MACRO")) {
+                isMacro = true;
+
+                // Next line after MACRO contains macro name and parameters
+                String[] defParts = code[i + 1].trim().split(" ");
+                String macroName = defParts[0];
+
+                // Add to MNT (Macro Name Table)
+                MNT.add(new String[]{macroName, String.valueOf(mdtIndex)});
+
+                i++; // skip macro name line
+                continue;
+            }
+
+            if (parts[0].equalsIgnoreCase("MEND")) {
+                MDT.add("MEND");
+                mdtIndex++;
+                isMacro = false;
+                continue;
+            }
+
+            if (isMacro) {
+                MDT.add(line);
+                mdtIndex++;
+            } else {
+                inter.write(line + "\n");
+            }
+        }
+
+        // Writing MNT to file
+        for (String[] entry : MNT) {
+            mntFile.write(entry[0] + "\t" + entry[1] + "\n");
+        }
+
+        // Writing MDT to file
+        for (int i = 0; i < MDT.size(); i++) {
+            mdtFile.write(i + "\t" + MDT.get(i) + "\n");
+        }
+
+        inter.close();
+        mntFile.close();
+        mdtFile.close();
+
+        System.out.println("Pass-I complete. MNT, MDT, and Intermediate Code generated.");
+    }
+}

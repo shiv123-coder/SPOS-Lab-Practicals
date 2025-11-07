@@ -1,0 +1,89 @@
+package assembler;
+import java.io.*;
+import java.util.*;
+
+public class Pass1 {
+    public static void main(String[] args) throws IOException {
+        // Input source code
+        String[][] program = {
+            {"START", "100"},
+            {"MOVER", "AREG", "ONE"},
+            {"ADD", "AREG", "TWO"},
+            {"MOVEM", "AREG", "RESULT"},
+            {"END"}
+        };
+
+        int lc = 0;
+        int symCnt = 0;
+
+        // Symbol Table
+        String[][] symbolTable = new String[10][2];
+
+        BufferedWriter symtab = new BufferedWriter(new FileWriter("symtab.txt"));
+        BufferedWriter inter = new BufferedWriter(new FileWriter("intermediate.txt"));
+
+        // Process START directive
+        if (program[0][0].equalsIgnoreCase("START")) {
+            lc = Integer.parseInt(program[0][1]);
+            inter.write("(AD,01)\t(C," + lc + ")\n");
+        }
+
+        // Process each instruction
+        for (int i = 1; i < program.length; i++) {
+            String label = "", opcode = "", operand1 = "", operand2 = "";
+
+            if (program[i].length == 3) {
+                opcode = program[i][0];
+                operand1 = program[i][1];
+                operand2 = program[i][2];
+            } else if (program[i].length == 2) {
+                opcode = program[i][0];
+                operand1 = program[i][1];
+            } else {
+                opcode = program[i][0];
+            }
+
+            // Handle instructions
+            switch (opcode) {
+                case "START":
+                    break;
+                case "MOVER":
+                case "MOVEM":
+                case "ADD":
+                case "SUB":
+                case "MULT":
+                case "DIV":
+                case "COMP":
+                case "READ":
+                case "PRINT":
+                    inter.write(lc + "\t(IS," + opcode + ")\t" + operand1 + "\t" + operand2 + "\n");
+                    lc++;
+                    break;
+                case "DS":
+                case "DC":
+                    symbolTable[symCnt][0] = operand1;
+                    symbolTable[symCnt][1] = String.valueOf(lc);
+                    symCnt++;
+                    inter.write(lc + "\t(DL," + opcode + ")\t(C," + operand1 + ")\n");
+                    lc++;
+                    break;
+                case "END":
+                    inter.write("(AD,02)\n");
+                    break;
+            }
+        }
+
+        // Write symbol table
+        symtab.write("Symbol\tAddress\n");
+        for (int i = 0; i < symCnt; i++) {
+            symtab.write(symbolTable[i][0] + "\t" + symbolTable[i][1] + "\n");
+        }
+
+        symtab.close();
+        inter.close();
+
+        System.out.println("✅ Pass 1 complete. Files generated:");
+        System.out.println("   → symtab.txt");
+        System.out.println("   → intermediate.txt");
+    }
+}
