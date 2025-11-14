@@ -63,6 +63,6 @@ public class FIFO {
         // Final statistics
         System.out.println("\nTotal Page Hits: " + hit);
         System.out.println("Total Page Faults: " + fault);
-        System.out.printf("Hit Ratio: %.2f\n", (float) hit / ref_len);
+        System.out.printf("Hit Ratio:"+((float) hit / ref_len));
     }
 }

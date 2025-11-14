@@ -39,13 +39,22 @@ public class Pass2 {
             }
 
             int opCodeVal = inst.indexOf(opcode) + 1;
-            String regName = operand.contains(",") ? operand.split(",")[0] : "";
-            String symName = operand.contains(",") ? operand.split(",")[1] : operand;
+
+            String regName = "";
+            String symName = "";
+
+            if (operand.contains(",")) {
+                parts = operand.split(",");
+                regName = parts[0];
+                symName = parts[1];
+            } else {
+                symName = operand;
+            }
 
             int regCodeVal = reg.indexOf(regName) + 1;
             String address = symTable.getOrDefault(symName, "000");
 
-            target.write(lc + "\t" + String.format("%02d", opCodeVal) + "\t" + regCodeVal + "\t" + address + "\n");
+            target.write(lc + "\t" + opCodeVal + "\t" + regCodeVal + "\t" + address + "\n");
         }
 
         inter.close();

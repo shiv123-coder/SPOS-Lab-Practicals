@@ -30,7 +30,6 @@ public class OptimalReplacement {
         boolean isFull = false;
 
         System.out.println("\nReplacement Table:");
-        System.out.println("------------------");
 
         // Process each page reference
         for (int i = 0; i < ref_len; i++) {
@@ -91,7 +90,6 @@ public class OptimalReplacement {
         }
 
         // Final summary
-        System.out.println("\n--------------------------------");
         System.out.println("Total Page Hits   : " + hit);
         System.out.println("Total Page Faults : " + fault);
         System.out.printf("Hit Ratio         : %.2f\n", (float) hit / ref_len);

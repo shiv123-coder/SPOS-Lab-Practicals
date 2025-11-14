@@ -1,0 +1,5 @@
+body {
+  font-size: 16px;      /* makes text bigger */
+  line-height: 1.6;     /* more spacing between lines */
+  padding: 2rem;        /* adds some page space */
+}
